@@ -32,15 +32,30 @@ namespace MyDemoApp.Controllers
             {
                 return NotFound();
             }
+            RolePermissionViewModel model = new RolePermissionViewModel();
+           var role=await _context.Roles.Where(r=>r.RoleId== id).FirstOrDefaultAsync();
+            var rolepermissions = await _context.RolePermissions.Include(r => r.Module).Where(r => r.RoleId == id).ToListAsync();
+                ;
+            model.RoleName = role.RoleName;
+            if(rolepermissions!=null&& rolepermissions.Count > 0)
+            {
+                model.ModulePermissionList = rolepermissions.Select(s => new ModulePermission
+                {
+                    Add = s.Add,
+                    Delete = s.Delete,
+                    Edit = s.Edit,
+                    View = s.View,
+                    Module=s.Module.ModuleName
 
-            var role = await _context.Roles
-                .FirstOrDefaultAsync(m => m.RoleId == id);
+                }).ToList();
+            }
+            
             if (role == null)
             {
                 return NotFound();
             }
 
-            return View(role);
+            return View(model);
         }
 
         // GET: Role/Create
@@ -63,8 +78,31 @@ namespace MyDemoApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(role);
-                await _context.SaveChangesAsync();
+                var checkRoleExists = _context.Roles.Where(r => r.RoleName == role.RoleName).FirstOrDefault();
+                if (checkRoleExists == null)
+                {
+                    Role newRole = new Role { RoleName = role.RoleName };
+                    _context.Add(newRole);
+
+                    List<RolePermission> rolePermissions = new List<RolePermission>();
+                    foreach(var rolePermission in role.ModulePermissionList.Where(i=>i.IsSelected).ToList())
+                    {
+                        RolePermission newItem = new RolePermission
+                        {
+                            Role = newRole,
+                            ModuleId = rolePermission.ModuleId,
+                            View = rolePermission.View,
+                            Add = rolePermission.Add,
+                            Edit = rolePermission.Edit,
+                            Delete = rolePermission.Delete
+                        };
+                        rolePermissions.Add(newItem);
+                    }
+                    _context.AddRange(rolePermissions);
+                    await _context.SaveChangesAsync();
+                }
+               
+               
                 return RedirectToAction(nameof(Index));
             }
             return View(role);
@@ -83,7 +121,24 @@ namespace MyDemoApp.Controllers
             {
                 return NotFound();
             }
-            return View(role);
+          
+            RolePermissionViewModel model = new RolePermissionViewModel();
+            var rolepermissions = await _context.RolePermissions.Include(r => r.Module).Where(r => r.RoleId == id).ToListAsync();
+            model.RoleName = role.RoleName;
+            if (rolepermissions != null && rolepermissions.Count > 0)
+            {
+                model.ModulePermissionList = rolepermissions.Select(s => new ModulePermission
+                {
+                    Add = s.Add,
+                    Delete = s.Delete,
+                    Edit = s.Edit,
+                    View = s.View,
+                    Module = s.Module.ModuleName,
+                    IsSelected=true
+
+                }).ToList();
+            }
+            return View(model);
         }
 
         // POST: Role/Edit/5
@@ -91,31 +146,41 @@ namespace MyDemoApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("RoleId,RoleName")] Role role)
+        public async Task<IActionResult> Edit(RolePermissionViewModel role)
         {
-            if (id != role.RoleId)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
+                var checkRoleExists = _context.Roles.Where(r => r.RoleName == role.RoleName).FirstOrDefault();
+                if (checkRoleExists == null)
                 {
-                    _context.Update(role);
+                    var existingRole = _context.Roles.Where(r => r.RoleId == role.RoleId).FirstOrDefault();
+                    existingRole.RoleName = role.RoleName;
+                    _context.Roles.Update(existingRole);
+
+                    var rp = _context.RolePermissions.Where(r => r.RoleId == role.RoleId).ToList();
+                    if(rp!=null&& rp.Count > 0)
+                    {
+                        _context.RemoveRange(rp);
+                    }
+                    List<RolePermission> rolePermissions = new List<RolePermission>();
+                    foreach (var rolePermission in role.ModulePermissionList.Where(i => i.IsSelected).ToList())
+                    {
+                        RolePermission newItem = new RolePermission
+                        {
+                            Role = existingRole,
+                            ModuleId = rolePermission.ModuleId,
+                            View = rolePermission.View,
+                            Add = rolePermission.Add,
+                            Edit = rolePermission.Edit,
+                            Delete = rolePermission.Delete
+                        };
+                        rolePermissions.Add(newItem);
+                    }
+                    _context.AddRange(rolePermissions);
                     await _context.SaveChangesAsync();
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RoleExists(role.RoleId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
+
                 return RedirectToAction(nameof(Index));
             }
             return View(role);
