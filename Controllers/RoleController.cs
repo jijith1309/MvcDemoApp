@@ -46,12 +46,10 @@ namespace MyDemoApp.Controllers
         // GET: Role/Create
         public IActionResult Create()
         {
+            var modules = _context.Modules.Select(m=>new ModulePermission { ModuleId=m.ModuleId,Module=m.ModuleName}).ToList();
             RolePermissionViewModel model = new RolePermissionViewModel
             {
-                ModulePermissionList = new List<ModulePermission>()
-                {
-                    new ModulePermission{ModuleId=1,Module="Location"}
-                }
+                ModulePermissionList = modules
             };
             return View(model);
         }
