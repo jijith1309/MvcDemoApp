@@ -46,7 +46,14 @@ namespace MyDemoApp.Controllers
         // GET: Role/Create
         public IActionResult Create()
         {
-            return View();
+            RolePermissionViewModel model = new RolePermissionViewModel
+            {
+                ModulePermissionList = new List<ModulePermission>()
+                {
+                    new ModulePermission{ModuleId=1,Module="Location"}
+                }
+            };
+            return View(model);
         }
 
         // POST: Role/Create
@@ -54,7 +61,7 @@ namespace MyDemoApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RoleId,RoleName")] Role role)
+        public async Task<IActionResult> Create(RolePermissionViewModel role)
         {
             if (ModelState.IsValid)
             {
