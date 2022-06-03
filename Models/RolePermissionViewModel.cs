@@ -5,6 +5,7 @@ namespace MyDemoApp.Models
     public class RolePermissionViewModel
     {
         public int RoleId { get; set; }
+        [MaxLength(100,ErrorMessage ="Maximum allowed length is 100")]
         [Required(ErrorMessage ="RoleName is equired")]
         [RegularExpression(@"^[a-zA-Z\s]*$")]
         public string RoleName { get; set; }
