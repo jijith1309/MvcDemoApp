@@ -1,8 +1,12 @@
-﻿namespace MyDemoApp.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace MyDemoApp.Models
 {
     public class RolePermissionViewModel
     {
         public int RoleId { get; set; }
+        [Required(ErrorMessage ="RoleName is equired")]
+        [RegularExpression(@"^[a-zA-Z\s]*$")]
         public string RoleName { get; set; }
         public List<ModulePermission> ModulePermissionList { get; set; }
     }
