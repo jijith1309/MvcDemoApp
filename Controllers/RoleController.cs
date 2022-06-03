@@ -22,7 +22,7 @@ namespace MyDemoApp.Controllers
         // GET: Role
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Roles.ToListAsync());
+            return View(await _context.Roles.ToListAsync());
         }
 
         // GET: Role/Details/5
@@ -33,11 +33,12 @@ namespace MyDemoApp.Controllers
                 return NotFound();
             }
             RolePermissionViewModel model = new RolePermissionViewModel();
-           var role=await _context.Roles.Where(r=>r.RoleId== id).FirstOrDefaultAsync();
+            var role = await _context.Roles.Where(r => r.RoleId == id).FirstOrDefaultAsync();
             var rolepermissions = await _context.RolePermissions.Include(r => r.Module).Where(r => r.RoleId == id).ToListAsync();
-                ;
+
             model.RoleName = role.RoleName;
-            if(rolepermissions!=null&& rolepermissions.Count > 0)
+            model.RoleId = role.RoleId;
+            if (rolepermissions != null && rolepermissions.Count > 0)
             {
                 model.ModulePermissionList = rolepermissions.Select(s => new ModulePermission
                 {
@@ -45,11 +46,11 @@ namespace MyDemoApp.Controllers
                     Delete = s.Delete,
                     Edit = s.Edit,
                     View = s.View,
-                    Module=s.Module.ModuleName
+                    Module = s.Module.ModuleName
 
                 }).ToList();
             }
-            
+
             if (role == null)
             {
                 return NotFound();
@@ -61,7 +62,7 @@ namespace MyDemoApp.Controllers
         // GET: Role/Create
         public IActionResult Create()
         {
-            var modules = _context.Modules.Select(m=>new ModulePermission { ModuleId=m.ModuleId,Module=m.ModuleName}).ToList();
+            var modules = _context.Modules.Select(m => new ModulePermission { ModuleId = m.ModuleId, Module = m.ModuleName }).ToList();
             RolePermissionViewModel model = new RolePermissionViewModel
             {
                 ModulePermissionList = modules
@@ -85,7 +86,7 @@ namespace MyDemoApp.Controllers
                     _context.Add(newRole);
 
                     List<RolePermission> rolePermissions = new List<RolePermission>();
-                    foreach(var rolePermission in role.ModulePermissionList.Where(i=>i.IsSelected).ToList())
+                    foreach (var rolePermission in role.ModulePermissionList.Where(i => i.IsSelected).ToList())
                     {
                         RolePermission newItem = new RolePermission
                         {
@@ -101,8 +102,8 @@ namespace MyDemoApp.Controllers
                     _context.AddRange(rolePermissions);
                     await _context.SaveChangesAsync();
                 }
-               
-               
+
+
                 return RedirectToAction(nameof(Index));
             }
             return View(role);
@@ -121,23 +122,43 @@ namespace MyDemoApp.Controllers
             {
                 return NotFound();
             }
-          
+
             RolePermissionViewModel model = new RolePermissionViewModel();
+            var modules = _context.Modules.Select(m => new ModulePermission { ModuleId = m.ModuleId, Module = m.ModuleName }).ToList();
             var rolepermissions = await _context.RolePermissions.Include(r => r.Module).Where(r => r.RoleId == id).ToListAsync();
             model.RoleName = role.RoleName;
-            if (rolepermissions != null && rolepermissions.Count > 0)
+            model.RoleId = role.RoleId;
+            foreach (var module in modules)
             {
-                model.ModulePermissionList = rolepermissions.Select(s => new ModulePermission
+                if (rolepermissions != null && rolepermissions.Count > 0)
                 {
-                    Add = s.Add,
-                    Delete = s.Delete,
-                    Edit = s.Edit,
-                    View = s.View,
-                    Module = s.Module.ModuleName,
-                    IsSelected=true
-
-                }).ToList();
+                    var rp = rolepermissions.Where(rpp => rpp.Module.ModuleId == module.ModuleId).FirstOrDefault();
+                    if (rp != null)
+                    {
+                        module.ModuleId = rp.ModuleId;
+                        module.Module = rp.Module.ModuleName;
+                        module.IsSelected = true;
+                        module.Add = rp.Add;
+                        module.View = rp.View;
+                        module.Delete = rp.Delete;
+                        module.Edit = rp.Edit;
+                    }
+                }
             }
+            model.ModulePermissionList = modules;
+            //if (rolepermissions != null && rolepermissions.Count > 0)
+            //{
+            //    model.ModulePermissionList = rolepermissions.Select(s => new ModulePermission
+            //    {
+            //        Add = s.Add,
+            //        Delete = s.Delete,
+            //        Edit = s.Edit,
+            //        View = s.View,
+            //        Module = s.Module.ModuleName,
+            //        IsSelected=true
+
+            //    }).ToList();
+            //}
             return View(model);
         }
 
@@ -150,7 +171,7 @@ namespace MyDemoApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var checkRoleExists = _context.Roles.Where(r => r.RoleName == role.RoleName).FirstOrDefault();
+                var checkRoleExists = _context.Roles.Where(r => r.RoleName == role.RoleName && r.RoleId != role.RoleId).FirstOrDefault();
                 if (checkRoleExists == null)
                 {
                     var existingRole = _context.Roles.Where(r => r.RoleId == role.RoleId).FirstOrDefault();
@@ -158,7 +179,7 @@ namespace MyDemoApp.Controllers
                     _context.Roles.Update(existingRole);
 
                     var rp = _context.RolePermissions.Where(r => r.RoleId == role.RoleId).ToList();
-                    if(rp!=null&& rp.Count > 0)
+                    if (rp != null && rp.Count > 0)
                     {
                         _context.RemoveRange(rp);
                     }
@@ -218,14 +239,14 @@ namespace MyDemoApp.Controllers
             {
                 _context.Roles.Remove(role);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool RoleExists(int id)
         {
-          return _context.Roles.Any(e => e.RoleId == id);
+            return _context.Roles.Any(e => e.RoleId == id);
         }
     }
 }

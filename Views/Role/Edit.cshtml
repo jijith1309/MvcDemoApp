@@ -11,7 +11,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                   <input type="hidden" asp-for="RoleId" />
@@ -29,8 +29,9 @@
                     <tr>
 
                         <td>
-                            
-                            <input asp-for="@Model.ModulePermissionList[i].IsSelected"  type="checkbox" disabled />
+                            <input type="hidden" asp-for="@Model.ModulePermissionList[i].ModuleId" />
+                            <input type="hidden" asp-for="@Model.ModulePermissionList[i].Module" /> 
+                            <input asp-for="@Model.ModulePermissionList[i].IsSelected"  type="checkbox"  />
                         </td>
                         <td>
                             <label for="@Model.ModulePermissionList[i].IsSelected">@Model.ModulePermissionList[i].Module</label>
@@ -72,7 +73,7 @@
             </table>
     }
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Update" class="btn btn-primary" />
             </div>
         </form>
     </div>
