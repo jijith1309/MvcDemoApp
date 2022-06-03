@@ -22,7 +22,8 @@ namespace MyDemoApp.Controllers
         // GET: Role
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Roles.ToListAsync());
+            var roles = await _context.Roles.FromSqlInterpolated($"exec GetAllRoles").ToListAsync();
+            return View(roles);
         }
 
         // GET: Role/Details/5
