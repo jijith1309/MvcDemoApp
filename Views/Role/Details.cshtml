@@ -1,0 +1,77 @@
+﻿@model MyDemoApp.Models.RolePermissionViewModel
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Role</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.RoleName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.RoleName)
+        </dd>
+    </dl>
+    <p>Selected modules and access</p>
+    @if (Model.ModulePermissionList != null && Model.ModulePermissionList.Count > 0)
+    {
+        <table>
+               @for (int i = 0; i < @Model.ModulePermissionList.Count(); i++)
+                {
+                    <tr>
+
+                        @*<td>
+                            
+                            <input asp-for="@Model.ModulePermissionList[i].IsSelected"  type="checkbox" disabled />
+                        </td>*@
+                        <td>
+                            <label for="@Model.ModulePermissionList[i].IsSelected">@Model.ModulePermissionList[i].Module</label>
+                        </td>
+
+                        <td>
+                            <input asp-for="@Model.ModulePermissionList[i].View"  type="checkbox" disabled  />
+                        </td>
+                         <td>
+                              <label for="@Model.ModulePermissionList[i].View">View</label>
+                        </td>
+
+                         <td>
+                            <input asp-for="@Model.ModulePermissionList[i].Add"  type="checkbox" disabled  />
+                        </td>
+                         <td>
+                              <label for="@Model.ModulePermissionList[i].Add">Add</label>
+                        </td>
+
+                         <td>
+                            <input asp-for="@Model.ModulePermissionList[i].Edit"  type="checkbox" disabled  />
+                        </td>
+                         <td>
+                              <label for="@Model.ModulePermissionList[i].Edit">Edit</label>
+                        </td>
+
+                        @* <td>
+                              <label for="@Model.ModulePermissionList[i].Add">Delete</label>
+                        </td>*@
+
+                         <td>
+                            <input asp-for="@Model.ModulePermissionList[i].Delete"  type="checkbox" disabled  />
+                        </td>
+                         <td>
+                              <label for="@Model.ModulePermissionList[i].Delete">Delete</label>
+                        </td>
+                    </tr>
+                }
+            </table>
+    }
+    
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.RoleId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

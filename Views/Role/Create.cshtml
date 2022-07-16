@@ -1,0 +1,85 @@
+﻿@model MyDemoApp.Models.RolePermissionViewModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Role</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="RoleName" class="control-label"></label>
+                <input asp-for="RoleName" class="form-control" />
+                <span asp-validation-for="RoleName" class="text-danger"></span>
+            </div>
+           
+            <table>
+               @for (int i = 0; i < @Model.ModulePermissionList.Count(); i++)
+                {
+                    <tr>
+
+                        <td>
+                            <input type="hidden" asp-for="@Model.ModulePermissionList[i].ModuleId" />
+                            <input type="hidden" asp-for="@Model.ModulePermissionList[i].Module" /> 
+                            <input asp-for="@Model.ModulePermissionList[i].IsSelected"  type="checkbox"  />
+                        </td>
+                        <td>
+                            <label for="@Model.ModulePermissionList[i].IsSelected">@Model.ModulePermissionList[i].Module</label>
+                        </td>
+
+                        <td>
+                            <input asp-for="@Model.ModulePermissionList[i].View"  type="checkbox"  />
+                        </td>
+                         <td>
+                              <label for="@Model.ModulePermissionList[i].View">View</label>
+                        </td>
+
+                         <td>
+                            <input asp-for="@Model.ModulePermissionList[i].Add"  type="checkbox"  />
+                        </td>
+                         <td>
+                              <label for="@Model.ModulePermissionList[i].Add">Add</label>
+                        </td>
+
+                         <td>
+                            <input asp-for="@Model.ModulePermissionList[i].Edit"  type="checkbox"  />
+                        </td>
+                         <td>
+                              <label for="@Model.ModulePermissionList[i].Edit">Edit</label>
+                        </td>
+
+                         <td>
+                              <label for="@Model.ModulePermissionList[i].Add">Delete</label>
+                        </td>
+
+                         <td>
+                            <input asp-for="@Model.ModulePermissionList[i].Delete"  type="checkbox"  />
+                        </td>
+                         <td>
+                              <label for="@Model.ModulePermissionList[i].Delete">Delete</label>
+                        </td>
+                    </tr>
+                }
+            </table>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+}
+}
