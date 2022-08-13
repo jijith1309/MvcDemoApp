@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "aA0g6O5PSGh1+P78AfYOD00waLxhsM4mCkCiMljXVUc=",
+  "Hash": "MEHvACwAPGiSh2Ac8Bp9Rq93vINj2ko1bV85puCkjXU=",
   "Source": "MyDemoApp",
   "BasePath": "_content/MyDemoApp",
   "Mode": "Default",
@@ -49,6 +49,40 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "D:\\Sample-codes\\MvcDemoApp\\obj\\Debug\\net6.0\\scopedcss\\projectbundle\\MyDemoApp.bundle.scp.css"
+    },
+    {
+      "Identity": "D:\\Sample-codes\\MvcDemoApp\\wwwroot\\css\\cover.css",
+      "SourceId": "MyDemoApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Sample-codes\\MvcDemoApp\\wwwroot\\",
+      "BasePath": "_content/MyDemoApp",
+      "RelativePath": "css/cover.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\cover.css"
+    },
+    {
+      "Identity": "D:\\Sample-codes\\MvcDemoApp\\wwwroot\\css\\signin.css",
+      "SourceId": "MyDemoApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\Sample-codes\\MvcDemoApp\\wwwroot\\",
+      "BasePath": "_content/MyDemoApp",
+      "RelativePath": "css/signin.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\signin.css"
     },
     {
       "Identity": "D:\\Sample-codes\\MvcDemoApp\\wwwroot\\css\\site.css",
